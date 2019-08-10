@@ -1,0 +1,4 @@
+{
+  "jwtPrivateKey": "journal_jwtPrivateKey",
+  "db": "journal_db"
+}
