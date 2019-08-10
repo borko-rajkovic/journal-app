@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { NewNoteInput } from './dto/new-note.input';
 import { NotesArgs } from './dto/notes.args';
-import { Note } from './interfaces/note.interface';
+import { Note } from './schema/note.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
