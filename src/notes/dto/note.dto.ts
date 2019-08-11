@@ -5,8 +5,8 @@ export class NoteType {
   @Field(() => ID)
   id: string;
 
-  @Field(() => Int)
-  authorId: number;
+  @Field()
+  userId: string;
 
   @Field()
   title: string;

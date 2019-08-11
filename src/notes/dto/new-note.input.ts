@@ -3,8 +3,8 @@ import { Field, InputType, Int } from 'type-graphql';
 
 @InputType()
 export class NewNoteInput {
-  @Field(() => Int)
-  authorId: number;
+  @Field()
+  userId: string;
 
   @Field()
   @MaxLength(30)
