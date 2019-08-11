@@ -2,7 +2,7 @@ import { Length, MaxLength, MinLength } from 'class-validator';
 import { Field, InputType, Int } from 'type-graphql';
 
 @InputType()
-export class NewUserInput {
+export class UserInput {
   @Field()
   @MaxLength(30)
   username: string;
