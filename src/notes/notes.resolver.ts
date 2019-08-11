@@ -2,10 +2,10 @@ import { NotFoundException } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { NewNoteInput } from './dto/new-note.input';
-import { NotesArgs } from './dto/notes.args';
-import { Note } from './schema/note.interface';
-import { NotesService } from './notes.service';
 import { NoteType } from './dto/note.dto';
+import { NotesArgs } from './dto/notes.args';
+import { NotesService } from './notes.service';
+import { Note } from './schema/note.interface';
 
 @Resolver()
 export class NotesResolver {
