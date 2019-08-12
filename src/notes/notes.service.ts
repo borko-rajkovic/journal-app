@@ -46,7 +46,11 @@ export class NotesService {
 
   async findAll(notesArgs: NotesArgs, user: any): Promise<Note[]> {
     const { skip, take } = notesArgs;
-    return await this.noteModel.find({ userId: user.id }).exec();
+    let query = this.noteModel.find({ userId: user.id }).skip(skip);
+    if (take) {
+      query = query.limit(take);
+    }
+    return await query.exec();
   }
 
   async remove(id: string, user: any): Promise<boolean> {
