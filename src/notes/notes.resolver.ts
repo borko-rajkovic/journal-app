@@ -15,8 +15,9 @@ export class NotesResolver {
   constructor(private readonly notesService: NotesService) {}
 
   @Query(returns => NoteType)
-  async note(@Args('id') id: string): Promise<Note> {
-    const note = await this.notesService.findOneById(id);
+  @UseGuards(GqlAuthGuard)
+  async note(@Args('id') id: string, @CurrentUser() user: any): Promise<Note> {
+    const note = await this.notesService.findOneById(id, user);
     if (!note) {
       throw new NotFoundException(id);
     }
@@ -24,8 +25,12 @@ export class NotesResolver {
   }
 
   @Query(returns => [NoteType])
-  notes(@Args() notesArgs: NotesArgs): Promise<Note[]> {
-    return this.notesService.findAll(notesArgs);
+  @UseGuards(GqlAuthGuard)
+  async notes(
+    @Args() notesArgs: NotesArgs,
+    @CurrentUser() user: any,
+  ): Promise<Note[]> {
+    return await this.notesService.findAll(notesArgs, user);
   }
 
   @Mutation(returns => NoteType)
@@ -39,15 +44,18 @@ export class NotesResolver {
   }
 
   @Mutation(returns => NoteType)
+  @UseGuards(GqlAuthGuard)
   async editNote(
     @Args('updatedNoteData') updatedNoteData: EditNoteInput,
+    @CurrentUser() user: any,
   ): Promise<Note> {
-    const note = await this.notesService.edit(updatedNoteData);
+    const note = await this.notesService.edit(updatedNoteData, user);
     return note;
   }
 
   @Mutation(returns => Boolean)
-  async removeNote(@Args('id') id: string) {
-    return this.notesService.remove(id);
+  @UseGuards(GqlAuthGuard)
+  async removeNote(@Args('id') id: string, @CurrentUser() user: any) {
+    return this.notesService.remove(id, user);
   }
 }

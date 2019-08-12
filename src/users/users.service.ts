@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
@@ -12,10 +12,10 @@ export class UsersService {
 
   async create(data: UserInput): Promise<User> {
     const { username, password } = data;
-    const userExist = await this.userModel.count({ username }).exec();
+    const userExist = await this.userModel.countDocuments({ username }).exec();
 
     if (userExist > 0) {
-      throw new Error('User already exists');
+      throw new BadRequestException('User already exists');
     }
 
     const salt = await bcrypt.genSalt(10);

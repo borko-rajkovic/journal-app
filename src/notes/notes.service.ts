@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -18,10 +18,12 @@ export class NotesService {
     return newNote;
   }
 
-  async edit(data: EditNoteInput): Promise<Note> {
-    const note = await this.noteModel.findById(data.id).exec();
+  async edit(data: EditNoteInput, user: any): Promise<Note> {
+    const note = await this.noteModel
+      .findOne({ _id: data.id, userId: user.id })
+      .exec();
     if (!note) {
-      throw new Error('Note not found');
+      throw new NotFoundException();
     }
 
     if (data.body) {
@@ -38,17 +40,17 @@ export class NotesService {
     return updatedNote;
   }
 
-  async findOneById(id: string): Promise<Note> {
-    return await this.noteModel.findOne({ _id: id }).exec();
+  async findOneById(id: string, user: any): Promise<Note> {
+    return await this.noteModel.findOne({ _id: id, userId: user.id }).exec();
   }
 
-  async findAll(notesArgs: NotesArgs): Promise<Note[]> {
+  async findAll(notesArgs: NotesArgs, user: any): Promise<Note[]> {
     const { skip, take } = notesArgs;
-    return await this.noteModel.find().exec();
+    return await this.noteModel.find({ userId: user.id }).exec();
   }
 
-  async remove(id: string): Promise<boolean> {
-    await this.noteModel.findOneAndRemove(id);
+  async remove(id: string, user: any): Promise<boolean> {
+    await this.noteModel.deleteOne({ _id: id, userId: user.id }).exec();
     return true;
   }
 }
