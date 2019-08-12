@@ -16,4 +16,7 @@ export class NoteType {
 
   @Field()
   createdDate: Date;
+
+  @Field()
+  updatedDate: Date;
 }

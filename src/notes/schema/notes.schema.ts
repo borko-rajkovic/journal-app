@@ -5,4 +5,5 @@ export const NoteSchema = new mongoose.Schema({
   title: String,
   body: String,
   createdDate: { type: Date, default: Date.now },
+  updatedDate: { type: Date, default: Date.now },
 });
