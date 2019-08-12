@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
   imports: [
     MongooseModule.forRoot(config.get('db'), { useNewUrlParser: true }),
     GraphQLModule.forRoot({
+      introspection: true,
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
       context: ({ req }) => ({ req }),
