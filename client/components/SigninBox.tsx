@@ -4,16 +4,13 @@ import cookie from 'cookie';
 import redirect from '../lib/redirect';
 
 const SIGN_IN = gql`
-  mutation Signin($email: String!, $password: String!) {
-    signinUser(email: { email: $email, password: $password }) {
-      token
-    }
+  mutation login($username: String!, $password: String!) {
+    login(userData: { username: $username, password: $password })
   }
 `;
 
-// TODO: Find a better name for component.
 const SigninBox = ({ client }: any) => {
-  let email: any;
+  let username: any;
   let password: any;
 
   return (
@@ -21,7 +18,7 @@ const SigninBox = ({ client }: any) => {
       mutation={SIGN_IN}
       onCompleted={(data: any) => {
         // Store the token in cookie
-        document.cookie = cookie.serialize('token', data.signinUser.token, {
+        document.cookie = cookie.serialize('token', data.login, {
           maxAge: 30 * 24 * 60 * 60, // 30 days
         });
         // Force a reload of all the current queries now that the user is
@@ -43,12 +40,12 @@ const SigninBox = ({ client }: any) => {
 
             signinUser({
               variables: {
-                email: email.value,
+                username: username.value,
                 password: password.value,
               },
             });
 
-            email.value = password.value = '';
+            username.value = password.value = '';
           }}
         >
           {error && <p>No user found with that information.</p>}
@@ -56,7 +53,7 @@ const SigninBox = ({ client }: any) => {
             name="email"
             placeholder="Email"
             ref={node => {
-              email = node;
+              username = node;
             }}
           />
           <br />

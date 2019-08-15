@@ -12,7 +12,7 @@ if (typeof window === 'undefined') {
 
 function create(initialState: any, { getToken, fetchOptions }: any) {
   const httpLink = createHttpLink({
-    uri: 'https://api.graph.cool/simple/v1/cj5geu3slxl7t0127y8sity9r', // https://journal-mern.herokuapp.com
+    uri: 'https://journal-mern.herokuapp.com/graphql',
     credentials: 'same-origin',
     fetchOptions,
   });

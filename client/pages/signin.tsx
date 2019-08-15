@@ -11,7 +11,7 @@ export default class Signin extends React.Component {
   static async getInitialProps(context: any) {
     const { loggedInUser } = await checkLoggedIn(context.apolloClient);
 
-    if (loggedInUser.user) {
+    if (loggedInUser.whoAmI) {
       // Already signed in? No need to continue.
       // Throw them back to the main page
       redirect(context, '/');

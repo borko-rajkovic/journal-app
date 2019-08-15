@@ -4,10 +4,10 @@ export default (apolloClient: any) =>
   apolloClient
     .query({
       query: gql`
-        query getUser {
-          user {
+        query whoAmI {
+          whoAmI {
             id
-            name
+            username
           }
         }
       `,

@@ -1,25 +1,22 @@
-import { Mutation, withApollo } from 'react-apollo';
-import gql from 'graphql-tag';
 import cookie from 'cookie';
+import gql from 'graphql-tag';
+import { Mutation, withApollo } from 'react-apollo';
+
 import redirect from '../lib/redirect';
 
 const CREATE_USER = gql`
-  mutation Create($name: String!, $email: String!, $password: String!) {
-    createUser(
-      name: $name
-      authProvider: { email: { email: $email, password: $password } }
-    ) {
+  mutation register($username: String!, $password: String!) {
+    register(userData: { username: $username, password: $password }) {
       id
+      username
+      createdDate
     }
-    signinUser(email: { email: $email, password: $password }) {
-      token
-    }
+    login(userData: { username: $username, password: $password })
   }
 `;
 
 const RegisterBox = ({ client }: any) => {
-  let name: any;
-  let email: any;
+  let username: any;
   let password: any;
 
   return (
@@ -27,7 +24,8 @@ const RegisterBox = ({ client }: any) => {
       mutation={CREATE_USER}
       onCompleted={(data: any) => {
         // Store the token in cookie
-        document.cookie = cookie.serialize('token', data.signinUser.token, {
+        console.log('Data', data);
+        document.cookie = cookie.serialize('token', data.login, {
           maxAge: 2 * 24 * 60 * 60, // 2 days
         });
         // Force a reload of all the current queries now that the user is
@@ -38,7 +36,7 @@ const RegisterBox = ({ client }: any) => {
       }}
       onError={(error: any) => {
         // If you want to send error to external service?
-        console.log(error);
+        console.log(JSON.stringify(error.name));
       }}
     >
       {(create: any, { error }: any) => (
@@ -49,29 +47,20 @@ const RegisterBox = ({ client }: any) => {
 
             create({
               variables: {
-                name: name.value,
-                email: email.value,
+                username: username.value,
                 password: password.value,
               },
             });
 
-            name.value = email.value = password.value = '';
+            username.value = password.value = '';
           }}
         >
-          {error && <p>Issue occurred while registering :(</p>}
+          {error && <p>Username not available</p>}
           <input
-            name="name"
-            placeholder="Name"
+            name="username"
+            placeholder="username"
             ref={node => {
-              name = node;
-            }}
-          />
-          <br />
-          <input
-            name="email"
-            placeholder="Email"
-            ref={node => {
-              email = node;
+              username = node;
             }}
           />
           <br />
