@@ -4,7 +4,7 @@ import Link from 'next/link';
 import redirect from '../lib/redirect';
 import checkLoggedIn from '../lib/checkLoggedIn';
 
-import RegisterForm from '../components/SignupForm';
+import RegisterForm from '../components/RegisterForm';
 
 export default class Register extends React.Component {
   static async getInitialProps(context: any) {

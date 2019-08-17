@@ -50,8 +50,6 @@ const RegisterForm = ({ client }: any) => {
                 password: password.value,
               },
             });
-
-            username.value = password.value = '';
           }}
         >
           {error && <p>Username not available</p>}
