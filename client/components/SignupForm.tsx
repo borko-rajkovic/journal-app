@@ -24,7 +24,6 @@ const RegisterForm = ({ client }: any) => {
       mutation={REGISTER}
       onCompleted={(data: any) => {
         // Store the token in cookie
-        console.log('Data', data);
         document.cookie = cookie.serialize('token', data.login, {
           maxAge: 2 * 24 * 60 * 60, // 2 days
         });
@@ -36,7 +35,7 @@ const RegisterForm = ({ client }: any) => {
       }}
       onError={(error: any) => {
         // If you want to send error to external service?
-        console.log(JSON.stringify(error.name));
+        console.log(error);
       }}
     >
       {(create: any, { error }: any) => (
