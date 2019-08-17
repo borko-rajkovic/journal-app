@@ -21,6 +21,11 @@ const Layout: React.FunctionComponent<Props> = ({
           rel="stylesheet"
           href="https://bootswatch.com/4/cerulean/bootstrap.min.css"
         />
+        <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0-12/css/all.min.css"
+          rel="stylesheet"
+          crossOrigin={'anonymous'}
+        />
       </Head>
       <Navbar />
       <div className="container">{children}</div>

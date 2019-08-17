@@ -37,13 +37,22 @@ const NavbarUser = ({ signout, client }: any) => (
       </Link>
 
       <div className="collapse navbar-collapse">
-        <ul className="navbar-nav ml-auto">
-          <li className="nav-item">
-            <Link>
-              <a className="nav-link" href="/" onClick={() => signout(client)}>
-                Sign out
-              </a>
-            </Link>
+        <ul className="navbar-nav ml-auto nav-flex-icons">
+          <li className="nav-item dropdown">
+            <a
+              className="nav-link dropdown-toggle"
+              data-toggle="dropdown"
+              href=""
+            >
+              <i className="fas fa-user" />
+            </a>
+            <div className="dropdown-menu dropdown-menu-right dropdown-default">
+              <Link href="/">
+                <a className="dropdown-item" onClick={() => signout(client)}>
+                  Sign out
+                </a>
+              </Link>
+            </div>
           </li>
         </ul>
       </div>
