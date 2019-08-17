@@ -1,6 +1,8 @@
-import { Mutation, withApollo } from 'react-apollo';
-import gql from 'graphql-tag';
 import cookie from 'cookie';
+import gql from 'graphql-tag';
+import React from 'react';
+import { Mutation, withApollo } from 'react-apollo';
+
 import redirect from '../lib/redirect';
 
 const LOGIN = gql`
@@ -33,41 +35,57 @@ const LoginForm = ({ client }: any) => {
       }}
     >
       {(signinUser: any, { error }: any) => (
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            e.stopPropagation();
+        <div className="row">
+          <div className="col-6">
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                e.stopPropagation();
 
-            signinUser({
-              variables: {
-                username: username.value,
-                password: password.value,
-              },
-            });
+                signinUser({
+                  variables: {
+                    username: username.value,
+                    password: password.value,
+                  },
+                });
 
-            username.value = password.value = '';
-          }}
-        >
-          {error && <p>No user found with that information.</p>}
-          <input
-            name="email"
-            placeholder="Email"
-            ref={node => {
-              username = node;
-            }}
-          />
-          <br />
-          <input
-            name="password"
-            placeholder="Password"
-            ref={node => {
-              password = node;
-            }}
-            type="password"
-          />
-          <br />
-          <button>Sign in</button>
-        </form>
+                username.value = password.value = '';
+              }}
+            >
+              <fieldset>
+                <legend>Login</legend>
+                {error && <p>No user found with that information.</p>}
+                <div className="form-group">
+                  <label>Username</label>
+                  <input
+                    className="form-control"
+                    placeholder="Enter username"
+                    name="username"
+                    ref={node => {
+                      username = node;
+                    }}
+                  />
+                  <small className="form-text text-muted">
+                    We'll never share your data with anyone else.
+                  </small>
+                </div>
+                <div className="form-group">
+                  <label>Password</label>
+                  <input
+                    className="form-control"
+                    name="password"
+                    placeholder="Password"
+                    ref={node => {
+                      password = node;
+                    }}
+                    type="password"
+                  />
+                </div>
+                <button className="btn btn-primary">Log in</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
       )}
     </Mutation>
   );

@@ -39,39 +39,56 @@ const RegisterForm = ({ client }: any) => {
       }}
     >
       {(create: any, { error }: any) => (
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            e.stopPropagation();
+        <div className="row">
+          <div className="col-6">
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                e.stopPropagation();
 
-            create({
-              variables: {
-                username: username.value,
-                password: password.value,
-              },
-            });
-          }}
-        >
-          {error && <p>Username not available</p>}
-          <input
-            name="username"
-            placeholder="username"
-            ref={node => {
-              username = node;
-            }}
-          />
-          <br />
-          <input
-            name="password"
-            placeholder="Password"
-            ref={node => {
-              password = node;
-            }}
-            type="password"
-          />
-          <br />
-          <button>Register</button>
-        </form>
+                create({
+                  variables: {
+                    username: username.value,
+                    password: password.value,
+                  },
+                });
+              }}
+            >
+              <fieldset>
+                <legend>Register</legend>
+                {error && <p>Username not available</p>}
+
+                <div className="form-group">
+                  <label>Username</label>
+                  <input
+                    className="form-control"
+                    placeholder="Enter username"
+                    name="username"
+                    ref={node => {
+                      username = node;
+                    }}
+                  />
+                  <small className="form-text text-muted">
+                    We'll never share your data with anyone else.
+                  </small>
+                </div>
+                <div className="form-group">
+                  <label>Password</label>
+                  <input
+                    className="form-control"
+                    name="password"
+                    placeholder="Password"
+                    ref={node => {
+                      password = node;
+                    }}
+                    type="password"
+                  />
+                </div>
+                <button className="btn btn-primary">Register</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
       )}
     </Mutation>
   );
