@@ -1,3 +1,4 @@
+import React from 'react';
 import cookie from 'cookie';
 import gql from 'graphql-tag';
 import { Mutation, withApollo } from 'react-apollo';
@@ -39,56 +40,62 @@ const RegisterForm = ({ client }: any) => {
       }}
     >
       {(create: any, { error }: any) => (
-        <div className="row">
-          <div className="col-6">
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                e.stopPropagation();
+        <React.Fragment>
+          <legend>Register</legend>
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              Username not available
+            </div>
+          )}
 
-                create({
-                  variables: {
-                    username: username.value,
-                    password: password.value,
-                  },
-                });
-              }}
-            >
-              <fieldset>
-                <legend>Register</legend>
-                {error && <p>Username not available</p>}
+          <div className="row">
+            <div className="col-6">
+              <form
+                onSubmit={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
 
-                <div className="form-group">
-                  <label>Username</label>
-                  <input
-                    className="form-control"
-                    placeholder="Enter username"
-                    name="username"
-                    ref={node => {
-                      username = node;
-                    }}
-                  />
-                  <small className="form-text text-muted">
-                    We'll never share your data with anyone else.
-                  </small>
-                </div>
-                <div className="form-group">
-                  <label>Password</label>
-                  <input
-                    className="form-control"
-                    name="password"
-                    placeholder="Password"
-                    ref={node => {
-                      password = node;
-                    }}
-                    type="password"
-                  />
-                </div>
-                <button className="btn btn-primary">Register</button>
-              </fieldset>
-            </form>
+                  create({
+                    variables: {
+                      username: username.value,
+                      password: password.value,
+                    },
+                  });
+                }}
+              >
+                <fieldset>
+                  <div className="form-group">
+                    <label>Username</label>
+                    <input
+                      className="form-control"
+                      placeholder="Enter username"
+                      name="username"
+                      ref={node => {
+                        username = node;
+                      }}
+                    />
+                    <small className="form-text text-muted">
+                      We'll never share your data with anyone else.
+                    </small>
+                  </div>
+                  <div className="form-group">
+                    <label>Password</label>
+                    <input
+                      className="form-control"
+                      name="password"
+                      placeholder="Password"
+                      ref={node => {
+                        password = node;
+                      }}
+                      type="password"
+                    />
+                  </div>
+                  <button className="btn btn-primary">Submit</button>
+                </fieldset>
+              </form>
+            </div>
           </div>
-        </div>
+        </React.Fragment>
       )}
     </Mutation>
   );

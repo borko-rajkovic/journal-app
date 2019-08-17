@@ -35,57 +35,64 @@ const LoginForm = ({ client }: any) => {
       }}
     >
       {(signinUser: any, { error }: any) => (
-        <div className="row">
-          <div className="col-6">
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                e.stopPropagation();
+        <React.Fragment>
+          <legend>Login</legend>
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              Username or password invalid!
+            </div>
+          )}
 
-                signinUser({
-                  variables: {
-                    username: username.value,
-                    password: password.value,
-                  },
-                });
+          <div className="row">
+            <div className="col-6">
+              <form
+                onSubmit={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
 
-                username.value = password.value = '';
-              }}
-            >
-              <fieldset>
-                <legend>Login</legend>
-                {error && <p>No user found with that information.</p>}
-                <div className="form-group">
-                  <label>Username</label>
-                  <input
-                    className="form-control"
-                    placeholder="Enter username"
-                    name="username"
-                    ref={node => {
-                      username = node;
-                    }}
-                  />
-                  <small className="form-text text-muted">
-                    We'll never share your data with anyone else.
-                  </small>
-                </div>
-                <div className="form-group">
-                  <label>Password</label>
-                  <input
-                    className="form-control"
-                    name="password"
-                    placeholder="Password"
-                    ref={node => {
-                      password = node;
-                    }}
-                    type="password"
-                  />
-                </div>
-                <button className="btn btn-primary">Log in</button>
-              </fieldset>
-            </form>
+                  signinUser({
+                    variables: {
+                      username: username.value,
+                      password: password.value,
+                    },
+                  });
+
+                  username.value = password.value = '';
+                }}
+              >
+                <fieldset>
+                  <div className="form-group">
+                    <label>Username</label>
+                    <input
+                      className="form-control"
+                      placeholder="Enter username"
+                      name="username"
+                      ref={node => {
+                        username = node;
+                      }}
+                    />
+                    <small className="form-text text-muted">
+                      We'll never share your data with anyone else.
+                    </small>
+                  </div>
+                  <div className="form-group">
+                    <label>Password</label>
+                    <input
+                      className="form-control"
+                      name="password"
+                      placeholder="Password"
+                      ref={node => {
+                        password = node;
+                      }}
+                      type="password"
+                    />
+                  </div>
+                  <button className="btn btn-primary">Submit</button>
+                </fieldset>
+              </form>
+            </div>
           </div>
-        </div>
+        </React.Fragment>
       )}
     </Mutation>
   );
