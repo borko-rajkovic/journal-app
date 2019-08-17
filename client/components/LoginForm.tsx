@@ -3,19 +3,19 @@ import gql from 'graphql-tag';
 import cookie from 'cookie';
 import redirect from '../lib/redirect';
 
-const SIGN_IN = gql`
+const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(userData: { username: $username, password: $password })
   }
 `;
 
-const SigninBox = ({ client }: any) => {
+const LoginForm = ({ client }: any) => {
   let username: any;
   let password: any;
 
   return (
     <Mutation
-      mutation={SIGN_IN}
+      mutation={LOGIN}
       onCompleted={(data: any) => {
         // Store the token in cookie
         document.cookie = cookie.serialize('token', data.login, {
@@ -73,4 +73,4 @@ const SigninBox = ({ client }: any) => {
   );
 };
 
-export default withApollo(SigninBox);
+export default withApollo(LoginForm);

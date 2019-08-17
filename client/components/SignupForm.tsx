@@ -4,7 +4,7 @@ import { Mutation, withApollo } from 'react-apollo';
 
 import redirect from '../lib/redirect';
 
-const CREATE_USER = gql`
+const REGISTER = gql`
   mutation register($username: String!, $password: String!) {
     register(userData: { username: $username, password: $password }) {
       id
@@ -15,13 +15,13 @@ const CREATE_USER = gql`
   }
 `;
 
-const RegisterBox = ({ client }: any) => {
+const RegisterForm = ({ client }: any) => {
   let username: any;
   let password: any;
 
   return (
     <Mutation
-      mutation={CREATE_USER}
+      mutation={REGISTER}
       onCompleted={(data: any) => {
         // Store the token in cookie
         console.log('Data', data);
@@ -80,4 +80,4 @@ const RegisterBox = ({ client }: any) => {
   );
 };
 
-export default withApollo(RegisterBox);
+export default withApollo(RegisterForm);

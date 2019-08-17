@@ -1,13 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import Layout from '../components/Layout';
 
 import redirect from '../lib/redirect';
 import checkLoggedIn from '../lib/checkLoggedIn';
 
-import SigninBox from '../components/SigninBox';
+import RegisterForm from '../components/SignupForm';
 
-export default class Signin extends React.Component {
+export default class Register extends React.Component {
   static async getInitialProps(context: any) {
     const { loggedInUser } = await checkLoggedIn(context.apolloClient);
 
@@ -22,15 +21,15 @@ export default class Signin extends React.Component {
 
   render() {
     return (
-      <Layout>
-        {/* SigninBox handles all login logic. */}
-        <SigninBox />
+      <React.Fragment>
+        {/* RegisterBox handles all register logic. */}
+        <RegisterForm />
         <hr />
-        New?{' '}
-        <Link prefetch href="/create-account">
-          <a>Create account</a>
+        Already have an account?{' '}
+        <Link prefetch href="/login">
+          <a>Sign in</a>
         </Link>
-      </Layout>
+      </React.Fragment>
     );
   }
 }
