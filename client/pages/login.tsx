@@ -27,7 +27,7 @@ export default class Login extends React.Component {
         <LoginForm />
         <hr />
         New?{' '}
-        <Link prefetch href="/create-account">
+        <Link prefetch href="/register">
           <a>Create account</a>
         </Link>
       </Layout>

@@ -5,6 +5,52 @@ import { withApollo } from 'react-apollo';
 import checkLoggedIn from '../lib/checkLoggedIn';
 import redirect from '../lib/redirect';
 
+const NavbarGuest = () => (
+  <nav className="navbar navbar-expand navbar-dark bg-primary mb-4">
+    <div className="container">
+      <Link href="/">
+        <a className="navbar-brand">JournalApp</a>
+      </Link>
+      <div className="collapse navbar-collapse">
+        <ul className="navbar-nav ml-auto">
+          <li className="nav-item">
+            <Link href="/login">
+              <a className="nav-link">Login</a>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link href="/register">
+              <a className="nav-link">Register</a>
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+);
+
+const NavbarUser = ({ signout, client }: any) => (
+  <nav className="navbar navbar-expand navbar-dark bg-primary mb-4">
+    <div className="container">
+      <Link href="/">
+        <a className="navbar-brand">JournalApp</a>
+      </Link>
+
+      <div className="collapse navbar-collapse">
+        <ul className="navbar-nav ml-auto">
+          <li className="nav-item">
+            <Link>
+              <a className="nav-link" href="/" onClick={() => signout(client)}>
+                Sign out
+              </a>
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+);
+
 const Navbar = ({ client }: any) => {
   const [user, setUser]: any[] = useState({});
 
@@ -19,6 +65,8 @@ const Navbar = ({ client }: any) => {
       maxAge: -1, // Expire the cookie immediately
     });
 
+    setUser({});
+
     // Force a reload of all the current queries now that the user is
     // logged in, so we don't accidentally leave any state around.
     apolloClient.cache.reset().then(() => {
@@ -31,46 +79,10 @@ const Navbar = ({ client }: any) => {
     checkUser();
   }, []);
 
-  return (
-    <nav className="navbar navbar-expand navbar-dark bg-primary mb-4">
-      <div className="container">
-        <Link href="/">
-          <a className="navbar-brand">JournalApp</a>
-        </Link>
-        <div className="collapse navbar-collapse">
-          {user.whoAmI ? (
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link href="/">
-                  <a className="nav-link">Home</a>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/about">
-                  <a className="nav-link">About</a>
-                </Link>
-              </li>
-              <li>
-                <button onClick={() => signout(client)}>Sign out</button>
-              </li>
-            </ul>
-          ) : (
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link href="/login">
-                  <a className="nav-link">Login</a>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/register">
-                  <a className="nav-link">Register</a>
-                </Link>
-              </li>
-            </ul>
-          )}
-        </div>
-      </div>
-    </nav>
+  return user.whoAmI ? (
+    <NavbarUser signout={signout} client={client} />
+  ) : (
+    <NavbarGuest />
   );
 };
 

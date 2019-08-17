@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Layout from '../components/Layout';
 
 import redirect from '../lib/redirect';
 import checkLoggedIn from '../lib/checkLoggedIn';
@@ -21,7 +22,7 @@ export default class Register extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <Layout>
         {/* RegisterBox handles all register logic. */}
         <RegisterForm />
         <hr />
@@ -29,7 +30,7 @@ export default class Register extends React.Component {
         <Link prefetch href="/login">
           <a>Sign in</a>
         </Link>
-      </React.Fragment>
+      </Layout>
     );
   }
 }
