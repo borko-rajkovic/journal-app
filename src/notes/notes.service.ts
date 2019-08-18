@@ -45,11 +45,13 @@ export class NotesService {
   }
 
   async findAll(notesArgs: NotesArgs, user: any): Promise<Note[]> {
-    const { skip, take } = notesArgs;
+    const { skip, take, asc } = notesArgs;
+    const sortDirection = asc ? 1 : -1;
     let query = this.noteModel.find({ userId: user.id }).skip(skip);
     if (take) {
       query = query.limit(take);
     }
+    query = query.sort({ updatedDate: sortDirection });
     return await query.exec();
   }
 

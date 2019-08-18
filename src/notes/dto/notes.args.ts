@@ -12,4 +12,8 @@ export class NotesArgs {
   @Min(1)
   @Max(50)
   take: number;
+
+  @Field()
+  @IsOptional()
+  asc: boolean = true;
 }
