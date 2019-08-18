@@ -5,6 +5,7 @@ import { ApolloConsumer } from 'react-apollo';
 import LatestThreeNotes from '../components/LatestThreeNotes';
 import Layout from '../components/Layout';
 import checkLoggedIn from '../lib/checkLoggedIn';
+import AllNotes from '../components/AllNotes';
 
 const PleaseLogIn = () => (
   <div className="jumbotron">
@@ -52,6 +53,7 @@ const MainView = ({ loggedInUser }: any) => (
     </div>
     <hr className="my-4" />
     <LatestThreeNotes />
+    <AllNotes />
   </React.Fragment>
 );
 
