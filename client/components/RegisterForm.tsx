@@ -34,10 +34,9 @@ const RegisterForm = ({ client }: any) => {
           redirect({}, '/');
         });
       }}
-      onError={(error: any) => {
-        // If you want to send error to external service?
-        console.log(error);
-      }}
+      // onError={(error: any) => {
+      //   // If you want to send error to external service?
+      // }}
     >
       {(create: any, { error }: any) => (
         <React.Fragment>

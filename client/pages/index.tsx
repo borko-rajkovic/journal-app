@@ -2,9 +2,9 @@ import Link from 'next/link';
 import React from 'react';
 import { ApolloConsumer } from 'react-apollo';
 
+import LatestThreeNotes from '../components/LatestThreeNotes';
 import Layout from '../components/Layout';
 import checkLoggedIn from '../lib/checkLoggedIn';
-import { Note } from '../components/Note';
 
 const PleaseLogIn = () => (
   <div className="jumbotron">
@@ -51,32 +51,7 @@ const MainView = ({ loggedInUser }: any) => (
       </p>
     </div>
     <hr className="my-4" />
-    <div className="row">
-      <div className="col-4 d-flex align-items-stretch">
-        <Note
-          body="Short note"
-          title="Title of the note"
-          createdDate={+new Date()}
-          float={1}
-        />
-      </div>
-      <div className="col-4 d-flex align-items-stretch">
-        <Note
-          body="Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense"
-          createdDate={1566084019000}
-          title="Title of the note"
-          float={2}
-        />
-      </div>
-      <div className="col-4 d-flex align-items-stretch">
-        <Note
-          body="Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense"
-          createdDate={1566067159000}
-          title="Title of the note"
-          float={3}
-        />
-      </div>
-    </div>
+    <LatestThreeNotes />
   </React.Fragment>
 );
 
