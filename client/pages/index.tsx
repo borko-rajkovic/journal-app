@@ -52,15 +52,15 @@ const MainView = ({ loggedInUser }: any) => (
     </div>
     <hr className="my-4" />
     <div className="row">
-      <div className="col-4">
+      <div className="col-4 d-flex align-items-stretch">
         <Note
-          body="Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense"
+          body="Short note"
           title="Title of the note"
           createdDate={+new Date()}
           float={1}
         />
       </div>
-      <div className="col-4">
+      <div className="col-4 d-flex align-items-stretch">
         <Note
           body="Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense"
           createdDate={1566084019000}
@@ -68,9 +68,9 @@ const MainView = ({ loggedInUser }: any) => (
           float={2}
         />
       </div>
-      <div className="col-4">
+      <div className="col-4 d-flex align-items-stretch">
         <Note
-          body="Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense"
+          body="Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense Some really long text used for note as it would make some sense when somebody would use this application in proper way of using it the way it's used to be. This actually don't make any sense"
           createdDate={1566067159000}
           title="Title of the note"
           float={3}

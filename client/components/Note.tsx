@@ -25,13 +25,24 @@ export const Note: React.SFC<NoteProps> = ({
       break;
   }
   return (
-    <div className={className} style={{ maxWidth: '20rem' }}>
+    <div
+      className={className}
+      style={{
+        maxWidth: '20rem',
+        width: '100%',
+      }}
+    >
       <div className="card-header">
         {moment(new Date(createdDate)).fromNow()}
       </div>
       <div className="card-body">
         <h4 className="card-title">{title}</h4>
-        <p className="card-text">{body}</p>
+        <p
+          className="card-text"
+          style={{ maxHeight: '200px', overflowY: 'auto' }}
+        >
+          {body}
+        </p>
       </div>
       <div className="card-footer bg-transparent">
         <div className="row">
