@@ -15,5 +15,5 @@ export class NotesArgs {
 
   @Field()
   @IsOptional()
-  asc: boolean = true;
+  asc: boolean = false;
 }
