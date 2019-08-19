@@ -56,7 +56,7 @@ export class NotesService {
   }
 
   async count(user: any): Promise<number> {
-    const query = this.noteModel.count({ userId: user.id });
+    const query = this.noteModel.countDocuments({ userId: user.id });
     return await query.exec();
   }
 
