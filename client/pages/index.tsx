@@ -5,7 +5,6 @@ import { ApolloConsumer } from 'react-apollo';
 import LatestThreeNotes from '../components/LatestThreeNotes';
 import Layout from '../components/Layout';
 import checkLoggedIn from '../lib/checkLoggedIn';
-import AllNotes from '../components/AllNotes';
 
 const PleaseLogIn = () => (
   <div className="jumbotron">
@@ -46,14 +45,16 @@ const MainView = ({ loggedInUser }: any) => (
       </h1>
       <p className="lead">Here you can check your latest notes</p>
       <hr className="my-4" />
+      <p>Latest three notes will be shown bellow</p>
       <p>
-        Latest three notes will be shown bellow, for other notes check list
-        bellow for more details
+        For all notes click{' '}
+        <Link href="/all-notes">
+          <a>here</a>
+        </Link>
       </p>
     </div>
     <hr className="my-4" />
     <LatestThreeNotes />
-    <AllNotes />
   </React.Fragment>
 );
 

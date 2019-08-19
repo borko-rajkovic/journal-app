@@ -38,6 +38,14 @@ const NavbarUser = ({ signout, client }: any) => (
 
       <div className="collapse navbar-collapse">
         <ul className="navbar-nav ml-auto nav-flex-icons">
+          <li className="nav-item">
+            <Link href="/all-notes">
+              <a className="nav-link waves-effect waves-light">
+                <i className="far fa-copy" /> All notes
+              </a>
+            </Link>
+          </li>
+
           <li className="nav-item dropdown">
             <a
               className="nav-link dropdown-toggle"
