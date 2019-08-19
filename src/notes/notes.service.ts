@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 
 import { EditNoteInput } from './dto/edit-note.input';
 import { NewNoteInput } from './dto/new-note.input';
+import { NotesCountArgs } from './dto/notes-count.args';
 import { NotesArgs } from './dto/notes.args';
 import { Note } from './schema/note.interface';
 
@@ -45,19 +46,29 @@ export class NotesService {
   }
 
   async findAll(notesArgs: NotesArgs, user: any): Promise<Note[]> {
-    const { skip, take, asc } = notesArgs;
+    const { skip, take, asc, query } = notesArgs;
     const sortDirection = asc ? 1 : -1;
-    let query = this.noteModel.find({ userId: user.id }).skip(skip);
-    if (take) {
-      query = query.limit(take);
+    let where = { userId: user.id };
+    if (query) {
+      where = Object.assign({}, where, { title: new RegExp(query) });
     }
-    query = query.sort({ updatedDate: sortDirection });
-    return await query.exec();
+
+    let queryDB = this.noteModel.find(where).skip(skip);
+    if (take) {
+      queryDB = queryDB.limit(take);
+    }
+    queryDB = queryDB.sort({ updatedDate: sortDirection });
+    return await queryDB.exec();
   }
 
-  async count(user: any): Promise<number> {
-    const query = this.noteModel.countDocuments({ userId: user.id });
-    return await query.exec();
+  async count(user: any, args: NotesCountArgs): Promise<number> {
+    let where = { userId: user.id };
+    if (args) {
+      where = Object.assign({}, where, { title: new RegExp(args.query) });
+    }
+
+    const queryDB = this.noteModel.countDocuments(where);
+    return await queryDB.exec();
   }
 
   async remove(id: string, user: any): Promise<boolean> {

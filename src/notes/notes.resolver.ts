@@ -1,14 +1,15 @@
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
+import { GqlAuthGuard } from '../users/gql.auth.guard';
+import { CurrentUser } from '../users/user.decorator';
 import { EditNoteInput } from './dto/edit-note.input';
 import { NewNoteInput } from './dto/new-note.input';
 import { NoteType } from './dto/note.dto';
+import { NotesCountArgs } from './dto/notes-count.args';
 import { NotesArgs } from './dto/notes.args';
 import { NotesService } from './notes.service';
 import { Note } from './schema/note.interface';
-import { GqlAuthGuard } from '../users/gql.auth.guard';
-import { CurrentUser } from '../users/user.decorator';
 
 @Resolver()
 export class NotesResolver {
@@ -35,8 +36,11 @@ export class NotesResolver {
 
   @Query(returns => Number)
   @UseGuards(GqlAuthGuard)
-  async notesCount(@CurrentUser() user: any): Promise<number> {
-    return await this.notesService.count(user);
+  async notesCount(
+    @CurrentUser() user: any,
+    @Args() query: NotesCountArgs,
+  ): Promise<number> {
+    return await this.notesService.count(user, query);
   }
 
   @Mutation(returns => NoteType)

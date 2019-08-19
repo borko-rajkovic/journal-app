@@ -16,4 +16,8 @@ export class NotesArgs {
   @Field()
   @IsOptional()
   asc: boolean = false;
+
+  @Field()
+  @IsOptional()
+  query: string = '';
 }
