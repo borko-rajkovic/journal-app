@@ -33,6 +33,12 @@ export class NotesResolver {
     return await this.notesService.findAll(notesArgs, user);
   }
 
+  @Query(returns => Number)
+  @UseGuards(GqlAuthGuard)
+  async notesCount(@CurrentUser() user: any): Promise<number> {
+    return await this.notesService.count(user);
+  }
+
   @Mutation(returns => NoteType)
   @UseGuards(GqlAuthGuard)
   async addNote(

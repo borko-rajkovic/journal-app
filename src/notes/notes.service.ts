@@ -55,6 +55,11 @@ export class NotesService {
     return await query.exec();
   }
 
+  async count(user: any): Promise<number> {
+    const query = this.noteModel.count({ userId: user.id });
+    return await query.exec();
+  }
+
   async remove(id: string, user: any): Promise<boolean> {
     await this.noteModel.deleteOne({ _id: id, userId: user.id }).exec();
     return true;
