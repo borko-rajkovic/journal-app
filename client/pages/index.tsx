@@ -50,6 +50,10 @@ const MainView = ({ loggedInUser }: any) => (
         For all notes click{' '}
         <Link href="/all-notes">
           <a>here</a>
+        </Link>{' '}
+        To create new note click{' '}
+        <Link href="/new-note">
+          <a>here</a>
         </Link>
       </p>
     </div>
