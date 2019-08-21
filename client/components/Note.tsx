@@ -3,17 +3,23 @@ import moment from 'moment';
 import Link from 'next/link';
 
 interface NoteProps {
+  id: string;
   title: string;
   body: string;
   createdDate: number;
   float: number;
+  setShowModal: any;
+  setNoteIdForDelete: any;
 }
 
 export const Note: React.SFC<NoteProps> = ({
+  id,
   title,
   body,
   float,
   createdDate,
+  setShowModal,
+  setNoteIdForDelete,
 }) => {
   let className = 'card border-secondary mb-3';
   switch (float) {
@@ -53,7 +59,15 @@ export const Note: React.SFC<NoteProps> = ({
           </div>
           <div className="col-6">
             <Link href="/">
-              <a className="card-link float-right text-danger">Delete</a>
+              <a
+                className="card-link float-right text-danger"
+                onClick={() => {
+                  setNoteIdForDelete(id);
+                  setShowModal(true);
+                }}
+              >
+                Delete
+              </a>
             </Link>
           </div>
         </div>

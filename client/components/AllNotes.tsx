@@ -1,8 +1,10 @@
-import Link from 'next/link';
-import moment from 'moment';
 import gql from 'graphql-tag';
+import moment from 'moment';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { Query, withApollo } from 'react-apollo';
+import ReactModal from 'react-modal';
+import deleteNote from '../lib/deleteNote';
 
 const NOTES_COUNT = gql`
   query notesCount($query: String) {
@@ -31,11 +33,74 @@ const NotesLoaded = ({
   setSize,
   setQuery,
   query,
+  apolloClient,
+  refetchCount,
+  refetchNotes,
 }: any) => {
   const numberOfPages = Math.ceil(count / size);
   const [queryLocal, setQueryLocal] = useState(query);
+  const [showModal, setShowModal] = useState(false);
+  const [noteId, setNoteId] = useState('');
+
+  ReactModal.setAppElement('#__next');
+
   return (
     <React.Fragment>
+      <ReactModal
+        isOpen={showModal}
+        style={{
+          content: {
+            border: 0,
+            padding: 0,
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        <div className="modal-content" style={{ zIndex: 10 }}>
+          <div className="modal-header">
+            <h5 className="modal-title">Are you sure?</h5>
+            <button
+              type="button"
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              onClick={() => setShowModal(false)}
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <p>Please confirm if you are sure you want to do this action</p>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={async () => {
+                await deleteNote(apolloClient, noteId);
+                setShowModal(false);
+                await refetchCount();
+                await refetchNotes();
+              }}
+            >
+              Confirm
+            </button>
+            <button
+              onClick={() => setShowModal(false)}
+              type="button"
+              className="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </ReactModal>
       <div className="row">
         <div className="col-8">
           <div className="dropdown">
@@ -52,10 +117,12 @@ const NotesLoaded = ({
               <a
                 className="dropdown-item"
                 href="#"
-                onClick={e => {
+                onClick={async e => {
                   e.preventDefault();
                   setPage(1);
                   setSize(5);
+                  await refetchCount();
+                  await refetchNotes();
                 }}
               >
                 5
@@ -63,10 +130,12 @@ const NotesLoaded = ({
               <a
                 className="dropdown-item"
                 href="#"
-                onClick={e => {
+                onClick={async e => {
                   e.preventDefault();
                   setPage(1);
                   setSize(10);
+                  await refetchCount();
+                  await refetchNotes();
                 }}
               >
                 10
@@ -74,10 +143,12 @@ const NotesLoaded = ({
               <a
                 className="dropdown-item"
                 href="#"
-                onClick={e => {
+                onClick={async e => {
                   e.preventDefault();
                   setPage(1);
                   setSize(25);
+                  await refetchCount();
+                  await refetchNotes();
                 }}
               >
                 25
@@ -85,10 +156,12 @@ const NotesLoaded = ({
               <a
                 className="dropdown-item"
                 href="#"
-                onClick={e => {
+                onClick={async e => {
                   e.preventDefault();
                   setPage(1);
                   setSize(50);
+                  await refetchCount();
+                  await refetchNotes();
                 }}
               >
                 50
@@ -101,9 +174,11 @@ const NotesLoaded = ({
             className="form-control"
             placeholder="Search"
             value={queryLocal}
-            onKeyDown={e => {
+            onKeyDown={async e => {
               if (e.keyCode === 13) {
                 setQuery((e.target as any).value);
+                await refetchCount();
+                await refetchNotes();
               }
             }}
             onChange={e => setQueryLocal((e.target as any).value)}
@@ -143,7 +218,14 @@ const NotesLoaded = ({
                     </div>
                     <div className="col-6">
                       <Link href="/">
-                        <a className="text-danger">
+                        <a
+                          className="text-danger"
+                          onClick={(e: any) => {
+                            e.preventDefault();
+                            setNoteId(id);
+                            setShowModal(true);
+                          }}
+                        >
                           <i className="fas fa-trash-alt" />
                         </a>
                       </Link>
@@ -171,9 +253,11 @@ const NotesLoaded = ({
             <li className={page === 1 ? 'page-item disabled' : 'page-item'}>
               <a
                 className="page-link"
-                onClick={e => {
+                onClick={async e => {
                   e.preventDefault();
                   setPage(1);
+                  await refetchCount();
+                  await refetchNotes();
                 }}
                 style={{ cursor: 'pointer' }}
                 href="#"
@@ -188,9 +272,11 @@ const NotesLoaded = ({
               >
                 <a
                   className="page-link"
-                  onClick={e => {
+                  onClick={async e => {
                     e.preventDefault();
                     setPage(i + 1);
+                    await refetchCount();
+                    await refetchNotes();
                   }}
                   style={{ cursor: 'pointer' }}
                   href="#"
@@ -206,9 +292,11 @@ const NotesLoaded = ({
             >
               <a
                 className="page-link"
-                onClick={e => {
+                onClick={async e => {
                   e.preventDefault();
                   setPage(numberOfPages);
+                  await refetchCount();
+                  await refetchNotes();
                 }}
                 style={{ cursor: 'pointer' }}
                 href="#"
@@ -223,7 +311,13 @@ const NotesLoaded = ({
   );
 };
 
-const NotesWrapped = ({ count, query, setQuery }: any) => {
+const NotesWrapped = ({
+  count,
+  query,
+  setQuery,
+  apolloClient,
+  refetchCount,
+}: any) => {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
 
@@ -238,8 +332,9 @@ const NotesWrapped = ({ count, query, setQuery }: any) => {
         take,
         query,
       }}
+      fetchPolicy="network-only"
     >
-      {({ data, error, loading }: any) => {
+      {({ data, error, loading, refetch: refetchNotes }: any) => {
         const { notes } = data;
         return loading ? (
           <div className="text-center my-4">
@@ -260,6 +355,9 @@ const NotesWrapped = ({ count, query, setQuery }: any) => {
             setSize={setSize}
             setQuery={setQuery}
             query={query}
+            apolloClient={apolloClient}
+            refetchCount={refetchCount}
+            refetchNotes={refetchNotes}
           />
         );
       }}
@@ -267,17 +365,23 @@ const NotesWrapped = ({ count, query, setQuery }: any) => {
   );
 };
 
-const AllNotes = () => {
+const AllNotes = ({ client }: any) => {
   const [query, setQuery] = useState('');
   return (
-    <Query query={NOTES_COUNT} variables={{ query }}>
-      {({ data: count, loading: loadingCount }: any) =>
+    <Query query={NOTES_COUNT} variables={{ query }} fetchPolicy="network-only">
+      {({ data: count, loading: loadingCount, refetch: refetchCount }: any) =>
         loadingCount ? (
           <div className="text-center my-4">
             <div className="spinner-border" role="status" />
           </div>
         ) : (
-          <NotesWrapped count={count} query={query} setQuery={setQuery} />
+          <NotesWrapped
+            count={count}
+            query={query}
+            setQuery={setQuery}
+            apolloClient={client}
+            refetchCount={refetchCount}
+          />
         )
       }
     </Query>
