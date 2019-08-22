@@ -67,8 +67,11 @@ export const NoteCard: React.SFC<NoteCardProps> = ({
               : { maxHeight: '200px', overflowY: 'auto' }
           }
         >
-          {body.split('\n').map(line => (
-            <p>{line}</p>
+          {body.split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+              <span>{line}</span>
+              <br />
+            </React.Fragment>
           ))}
         </p>
       </div>
