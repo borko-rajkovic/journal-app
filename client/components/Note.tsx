@@ -6,6 +6,7 @@ import ReactModal from 'react-modal';
 import deleteNote from '../lib/deleteNote';
 import { NoteCard } from './NoteCard';
 import redirect from '../lib/redirect';
+import EditNoteForm from './EditNoteForm';
 
 const GET_NOTE = gql`
   query note($id: String!) {
@@ -115,7 +116,7 @@ const Note = (props: any) => {
             />
           </React.Fragment>
         ) : (
-          <div>Hello there</div>
+          <EditNoteForm note={note} />
         );
       }}
     </Query>
