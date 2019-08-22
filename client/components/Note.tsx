@@ -1,77 +1,125 @@
-import * as React from 'react';
-import moment from 'moment';
-import Link from 'next/link';
+import gql from 'graphql-tag';
+import React, { useState } from 'react';
+import { Query, withApollo } from 'react-apollo';
+import ReactModal from 'react-modal';
 
-interface NoteProps {
-  id: string;
-  title: string;
-  body: string;
-  createdDate: number;
-  float: number;
-  setShowModal: any;
-  setNoteIdForDelete: any;
-}
+import deleteNote from '../lib/deleteNote';
+import { NoteCard } from './NoteCard';
+import redirect from '../lib/redirect';
 
-export const Note: React.SFC<NoteProps> = ({
-  id,
-  title,
-  body,
-  float,
-  createdDate,
-  setShowModal,
-  setNoteIdForDelete,
-}) => {
-  let className = 'card border-secondary mb-3';
-  switch (float) {
-    case 2:
-      className = 'card border-secondary mb-3 mx-auto';
-      break;
-    case 3:
-      className = 'card border-secondary mb-3 float-right';
-      break;
+const GET_NOTE = gql`
+  query note($id: String!) {
+    note(id: $id) {
+      id
+      userId
+      title
+      body
+      createdDate
+      updatedDate
+    }
   }
+`;
+
+const Note = (props: any) => {
+  const [showModal, setShowModal] = useState(false);
+  const [noteIdForDelete, setNoteIdForDelete] = useState('');
+
+  const { id, edit, client } = props;
+
   return (
-    <div
-      className={className}
-      style={{
-        maxWidth: '20rem',
-        width: '100%',
+    <Query
+      query={GET_NOTE}
+      variables={{
+        id,
       }}
+      fetchPolicy="network-only"
     >
-      <div className="card-header">
-        {moment(new Date(createdDate)).fromNow()}
-      </div>
-      <div className="card-body">
-        <h4 className="card-title">{title}</h4>
-        <p
-          className="card-text"
-          style={{ maxHeight: '200px', overflowY: 'auto' }}
-        >
-          {body}
-        </p>
-      </div>
-      <div className="card-footer bg-transparent">
-        <div className="row">
-          <div className="col-6">
-            <Link href="/">
-              <a className="card-link">Edit</a>
-            </Link>
+      {({ data, error, loading }: any) => {
+        ReactModal.setAppElement('#__next');
+        const { note } = data;
+        return loading ? (
+          <div className="text-center my-4">
+            <div className="spinner-border" role="status" />
           </div>
-          <div className="col-6">
-            <Link href="/">
-              <a
-                className="card-link float-right text-danger"
-                onClick={() => {
-                  setNoteIdForDelete(id);
-                  setShowModal(true);
-                }}
-              >
-                Delete
-              </a>
-            </Link>
+        ) : error ? (
+          <div className="alert alert-danger" role="alert">
+            Something went wrong!
           </div>
-        </div>
-      </div>
-    </div>
+        ) : edit !== 'true' ? (
+          <React.Fragment>
+            <ReactModal
+              isOpen={showModal}
+              style={{
+                content: {
+                  border: 0,
+                  padding: 0,
+                  top: '50%',
+                  left: '50%',
+                  right: 'auto',
+                  bottom: 'auto',
+                  marginRight: '-50%',
+                  transform: 'translate(-50%, -50%)',
+                },
+              }}
+            >
+              <div className="modal-content" style={{ zIndex: 10 }}>
+                <div className="modal-header">
+                  <h5 className="modal-title">Are you sure?</h5>
+                  <button
+                    type="button"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    onClick={() => setShowModal(false)}
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <p>
+                    Please confirm if you are sure you want to do this action
+                  </p>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={async () => {
+                      await deleteNote(client, noteIdForDelete);
+                      setShowModal(false);
+                      redirect({}, '/');
+                    }}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </ReactModal>
+            <NoteCard
+              body={note.body}
+              createdDate={note.createdDate}
+              id={note.id}
+              setNoteIdForDelete={setNoteIdForDelete}
+              setShowModal={setShowModal}
+              title={note.title}
+              notePreview={true}
+              float={2}
+            />
+          </React.Fragment>
+        ) : (
+          <div>Hello there</div>
+        );
+      }}
+    </Query>
   );
 };
+
+export default withApollo<any, any>(Note);

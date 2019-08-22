@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Query, withApollo } from 'react-apollo';
 import ReactModal from 'react-modal';
 
-import { Note } from './Note';
+import { NoteCard } from './NoteCard';
 import deleteNote from '../lib/deleteNote';
 
 const LATEST_THREE_NOTES = gql`
@@ -80,7 +80,7 @@ const LatestThreeNotesLoaded = ({ notes, apolloClient, refetch }: any) => {
       </ReactModal>
       <div className="row">
         <div className="col-4 d-flex align-items-stretch">
-          <Note
+          <NoteCard
             id={notes[0].id}
             body={notes[0].body}
             title={notes[0].title}
@@ -92,7 +92,7 @@ const LatestThreeNotesLoaded = ({ notes, apolloClient, refetch }: any) => {
         </div>
         {notes.length > 1 ? (
           <div className="col-4 d-flex align-items-stretch">
-            <Note
+            <NoteCard
               id={notes[1].id}
               body={notes[1].body}
               setShowModal={setShowModal}
@@ -105,7 +105,7 @@ const LatestThreeNotesLoaded = ({ notes, apolloClient, refetch }: any) => {
         ) : null}
         {notes.length > 2 ? (
           <div className="col-4 d-flex align-items-stretch">
-            <Note
+            <NoteCard
               id={notes[2].id}
               body={notes[2].body}
               setShowModal={setShowModal}

@@ -199,7 +199,11 @@ const NotesLoaded = ({
           {notes.length > 0 ? (
             notes.map(({ id, title, createdDate, updatedDate, body }: any) => (
               <tr key={id}>
-                <td>{title}</td>
+                <td>
+                  <Link href={`/note?id=${id}&edit=false`}>
+                    <a>{title}</a>
+                  </Link>
+                </td>
                 <td>{body}</td>
                 <td>
                   {moment(new Date(createdDate)).format('DD.MM.YYYY HH:mm:ss')}
@@ -210,7 +214,7 @@ const NotesLoaded = ({
                 <td>
                   <div className="row">
                     <div className="col-6">
-                      <Link href="/">
+                      <Link href={`/note?id=${id}&edit=true`}>
                         <a>
                           <i className="fas fa-edit" />
                         </a>
