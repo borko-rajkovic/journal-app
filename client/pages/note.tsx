@@ -2,17 +2,11 @@ import * as React from 'react';
 
 import Layout from '../components/Layout';
 import Note from '../components/Note';
-import { User } from '../interfaces';
 import checkLoggedIn from '../lib/checkLoggedIn';
 import redirect from '../lib/redirect';
 import { ApolloConsumer } from 'react-apollo';
 
-interface Props {
-  item?: User;
-  errors?: string;
-}
-
-class InitialPropsDetail extends React.Component<Props> {
+class InitialPropsDetail extends React.Component<any> {
   static getInitialProps = async (context: any) => {
     const { loggedInUser } = await checkLoggedIn(context.apolloClient);
 
