@@ -3,7 +3,6 @@ import React from 'react';
 import { Mutation, withApollo } from 'react-apollo';
 
 import redirect from '../lib/redirect';
-import { ApolloError } from 'apollo-boost';
 
 const CREATE_NOTE = gql`
   mutation addNote($title: String!, $body: String!) {
@@ -24,9 +23,7 @@ const NewNoteForm = () => {
     <Mutation
       mutation={CREATE_NOTE}
       onCompleted={() => redirect({}, '/')}
-      onError={(error: ApolloError) =>
-        console.log('error', error.graphQLErrors)
-      }
+      // onError={(error: ApolloError) => {}}
     >
       {(create: any, { error, loading }: any) =>
         loading ? (

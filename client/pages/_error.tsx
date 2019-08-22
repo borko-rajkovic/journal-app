@@ -11,7 +11,6 @@ class ErrorPage extends App {
   };
 
   render() {
-    console.log('props', this.props);
     let response: any;
     switch ((this.props as any).errorCode) {
       case 200: // Also display a 404 if someone requests /_error explicitly
