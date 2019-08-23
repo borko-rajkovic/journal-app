@@ -14,7 +14,10 @@ const port = process.env.PORT || 3000;
 
 function create(initialState: any, { getToken, fetchOptions }: any) {
   const httpLink = createHttpLink({
-    uri: `http://localhost:${port}/graphql`,
+    uri:
+      process.env.NODE_ENV === 'production'
+        ? 'https://journal-mern.herokuapp.com/graphql'
+        : `http://localhost:${port}/graphql`,
     credentials: 'same-origin',
     fetchOptions,
   });
