@@ -10,9 +10,11 @@ if (typeof window === 'undefined') {
   (global as any).fetch = fetch;
 }
 
+const port = process.env.PORT || 3000;
+
 function create(initialState: any, { getToken, fetchOptions }: any) {
   const httpLink = createHttpLink({
-    uri: 'https://journal-mern.herokuapp.com/graphql',
+    uri: `http://localhost:${port}/graphql`,
     credentials: 'same-origin',
     fetchOptions,
   });
