@@ -1,11 +1,13 @@
-import * as React from 'react';
+import cookie from 'cookie';
 import moment from 'moment';
 import Link from 'next/link';
+import * as React from 'react';
 
 interface NoteCardProps {
   id: string;
   title: string;
   body: string;
+  attachment: string;
   createdDate: number;
   float: number;
   setShowModal: any;
@@ -17,12 +19,14 @@ export const NoteCard: React.SFC<NoteCardProps> = ({
   id,
   title,
   body,
+  attachment,
   float,
   createdDate,
   setShowModal,
   setNoteIdForDelete,
   notePreview,
 }) => {
+  const linkRef = React.createRef();
   let className = 'card border-secondary mb-3';
   switch (float) {
     case 2:
@@ -47,8 +51,56 @@ export const NoteCard: React.SFC<NoteCardProps> = ({
       }
     >
       <div className="card-header">
-        {moment(new Date(createdDate)).fromNow()}
+        <div className="row">
+          <div className="col-10">
+            {moment(new Date(createdDate)).fromNow()}
+          </div>
+          <div className="col-2">
+            {attachment ? (
+              <React.Fragment>
+                <a ref={linkRef as any} />
+                <a
+                  className="float-right"
+                  href="#"
+                  onClick={async e => {
+                    e.preventDefault();
+                    // const port = process.env.PORT || 3000;
+                    // const host =
+                    //   process.env.NODE_ENV === 'production'
+                    //     ? 'https://journal-mern.herokuapp.com'
+                    //     : `http://localhost:${port}`;
+                    const path = `/download?path=${attachment}`;
+                    try {
+                      const parsedCookie = cookie.parse(document.cookie);
+
+                      const token = parsedCookie.token;
+                      const data = await fetch(path, {
+                        headers: {
+                          authorization: `Bearer ${token}`,
+                        },
+                      });
+                      const blob = await data.blob();
+                      const href = window.URL.createObjectURL(blob);
+                      const a: any = linkRef.current;
+                      a.download = attachment.split('./uploads/')[1];
+                      a.href = href;
+                      a.click();
+                      a.href = '';
+                    } catch (error) {
+                      return;
+                    }
+
+                    // href={`/download?path=${attachment}`}
+                  }}
+                >
+                  <i className="far fa-file-alt" />
+                </a>
+              </React.Fragment>
+            ) : null}
+          </div>
+        </div>
       </div>
+
       <div className="card-body">
         <h4 className="card-title">
           {notePreview ? (

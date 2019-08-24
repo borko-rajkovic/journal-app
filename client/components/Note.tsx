@@ -15,6 +15,7 @@ const GET_NOTE = gql`
       userId
       title
       body
+      attachment
       createdDate
       updatedDate
     }
@@ -106,6 +107,7 @@ const Note = (props: any) => {
             </ReactModal>
             <NoteCard
               body={note.body}
+              attachment={note.attachment}
               createdDate={note.createdDate}
               id={note.id}
               setNoteIdForDelete={setNoteIdForDelete}

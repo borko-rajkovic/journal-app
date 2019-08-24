@@ -14,6 +14,7 @@ const LATEST_THREE_NOTES = gql`
       createdDate
       updatedDate
       body
+      attachment
     }
   }
 `;
@@ -83,6 +84,7 @@ const LatestThreeNotesLoaded = ({ notes, apolloClient, refetch }: any) => {
           <NoteCard
             id={notes[0].id}
             body={notes[0].body}
+            attachment={notes[0].attachment}
             title={notes[0].title}
             createdDate={notes[0].updatedDate}
             setShowModal={setShowModal}
@@ -95,6 +97,7 @@ const LatestThreeNotesLoaded = ({ notes, apolloClient, refetch }: any) => {
             <NoteCard
               id={notes[1].id}
               body={notes[1].body}
+              attachment={notes[1].attachment}
               setShowModal={setShowModal}
               title={notes[1].title}
               createdDate={notes[1].updatedDate}
@@ -108,6 +111,7 @@ const LatestThreeNotesLoaded = ({ notes, apolloClient, refetch }: any) => {
             <NoteCard
               id={notes[2].id}
               body={notes[2].body}
+              attachment={notes[2].attachment}
               setShowModal={setShowModal}
               title={notes[2].title}
               createdDate={notes[2].updatedDate}

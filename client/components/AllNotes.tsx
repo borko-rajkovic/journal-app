@@ -1,9 +1,11 @@
+import cookie from 'cookie';
 import gql from 'graphql-tag';
 import moment from 'moment';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { Query, withApollo } from 'react-apollo';
 import ReactModal from 'react-modal';
+
 import deleteNote from '../lib/deleteNote';
 
 const NOTES_COUNT = gql`
@@ -17,6 +19,7 @@ const ALL_NOTES = gql`
     notes(skip: $skip, take: $take, query: $query) {
       id
       title
+      attachment
       createdDate
       updatedDate
       body
@@ -43,6 +46,8 @@ const NotesLoaded = ({
   const [noteId, setNoteId] = useState('');
 
   ReactModal.setAppElement('#__next');
+
+  const linkRef = React.createRef();
 
   return (
     <React.Fragment>
@@ -190,6 +195,7 @@ const NotesLoaded = ({
           <tr>
             <th scope="col">Title</th>
             <th scope="col">Body</th>
+            <th scope="col">Attachment</th>
             <th scope="col">Created</th>
             <th scope="col">Updated</th>
             <th scope="col">Actions</th>
@@ -197,47 +203,111 @@ const NotesLoaded = ({
         </thead>
         <tbody>
           {notes.length > 0 ? (
-            notes.map(({ id, title, createdDate, updatedDate, body }: any) => (
-              <tr key={id}>
-                <td>
-                  <Link href={`/note?id=${id}&edit=false`}>
-                    <a>{title}</a>
-                  </Link>
-                </td>
-                <td>{body}</td>
-                <td>
-                  {moment(new Date(createdDate)).format('DD.MM.YYYY HH:mm:ss')}
-                </td>
-                <td>
-                  {moment(new Date(updatedDate)).format('DD.MM.YYYY HH:mm:ss')}
-                </td>
-                <td>
-                  <div className="row">
-                    <div className="col-6">
-                      <Link href={`/note?id=${id}&edit=true`}>
-                        <a>
-                          <i className="fas fa-edit" />
-                        </a>
-                      </Link>
+            notes.map(
+              ({
+                id,
+                title,
+                createdDate,
+                updatedDate,
+                body,
+                attachment,
+              }: any) => (
+                <tr key={id}>
+                  <td>
+                    <Link href={`/note?id=${id}&edit=false`}>
+                      <a>{title}</a>
+                    </Link>
+                  </td>
+                  <td>{body}</td>
+                  <td>
+                    {attachment ? (
+                      <React.Fragment>
+                        <a ref={linkRef as any} />
+                        <div className="row">
+                          <div className="col-12">
+                            <a
+                              className="float-right"
+                              href="#"
+                              onClick={async e => {
+                                e.preventDefault();
+                                // const port = process.env.PORT || 3000;
+                                // const host =
+                                //   process.env.NODE_ENV === 'production'
+                                //     ? 'https://journal-mern.herokuapp.com'
+                                //     : `http://localhost:${port}`;
+                                const path = `/download?path=${attachment}`;
+                                try {
+                                  const parsedCookie = cookie.parse(
+                                    document.cookie,
+                                  );
+
+                                  const token = parsedCookie.token;
+                                  const data = await fetch(path, {
+                                    headers: {
+                                      authorization: `Bearer ${token}`,
+                                    },
+                                  });
+                                  const blob = await data.blob();
+                                  const href = window.URL.createObjectURL(blob);
+                                  const a: any = linkRef.current;
+                                  a.download = attachment.split(
+                                    './uploads/',
+                                  )[1];
+                                  a.href = href;
+                                  a.click();
+                                  a.href = '';
+                                } catch (error) {
+                                  return;
+                                }
+
+                                // href={`/download?path=${attachment}`}
+                              }}
+                            >
+                              <i className="far fa-file-alt" />
+                            </a>
+                          </div>
+                        </div>
+                      </React.Fragment>
+                    ) : null}
+                  </td>
+                  <td>
+                    {moment(new Date(createdDate)).format(
+                      'DD.MM.YYYY HH:mm:ss',
+                    )}
+                  </td>
+                  <td>
+                    {moment(new Date(updatedDate)).format(
+                      'DD.MM.YYYY HH:mm:ss',
+                    )}
+                  </td>
+                  <td>
+                    <div className="row">
+                      <div className="col-6">
+                        <Link href={`/note?id=${id}&edit=true`}>
+                          <a>
+                            <i className="fas fa-edit" />
+                          </a>
+                        </Link>
+                      </div>
+                      <div className="col-6">
+                        <Link href="/">
+                          <a
+                            className="text-danger"
+                            onClick={(e: any) => {
+                              e.preventDefault();
+                              setNoteId(id);
+                              setShowModal(true);
+                            }}
+                          >
+                            <i className="fas fa-trash-alt" />
+                          </a>
+                        </Link>
+                      </div>
                     </div>
-                    <div className="col-6">
-                      <Link href="/">
-                        <a
-                          className="text-danger"
-                          onClick={(e: any) => {
-                            e.preventDefault();
-                            setNoteId(id);
-                            setShowModal(true);
-                          }}
-                        >
-                          <i className="fas fa-trash-alt" />
-                        </a>
-                      </Link>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            ))
+                  </td>
+                </tr>
+              ),
+            )
           ) : (
             <tr>
               <td colSpan={5}>There are no data</td>

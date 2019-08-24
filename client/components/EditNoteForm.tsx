@@ -1,3 +1,4 @@
+import cookie from 'cookie';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { Mutation, withApollo } from 'react-apollo';
@@ -18,6 +19,7 @@ const EDIT_NOTE = gql`
       userId
       title
       body
+      attachment
       createdDate
       updatedDate
     }
@@ -32,6 +34,8 @@ const EditNoteForm = (props: any) => {
   const [body, setBody] = useState(note.body);
 
   let file: any;
+  const linkRef = React.createRef();
+
   return (
     <Mutation
       mutation={EDIT_NOTE}
@@ -57,9 +61,9 @@ const EditNoteForm = (props: any) => {
                     e.stopPropagation();
 
                     const variables: any = {
-                        id,
-                        title,
-                        body,
+                      id,
+                      title,
+                      body,
                     };
 
                     if (file.files[0]) {
@@ -107,6 +111,60 @@ const EditNoteForm = (props: any) => {
                         Body should be at least 10 characters long
                       </div>
                     </div>
+
+                    {note.attachment ? (
+                      <React.Fragment>
+                        <a ref={linkRef as any} />
+                        <div className="alert alert-dismissible alert-warning">
+                          <a
+                            className="close"
+                            href="#"
+                            onClick={async e => {
+                              e.preventDefault();
+                              // const port = process.env.PORT || 3000;
+                              // const host =
+                              //   process.env.NODE_ENV === 'production'
+                              //     ? 'https://journal-mern.herokuapp.com'
+                              //     : `http://localhost:${port}`;
+                              const path = `/download?path=${note.attachment}`;
+                              try {
+                                const parsedCookie = cookie.parse(
+                                  document.cookie,
+                                );
+
+                                const token = parsedCookie.token;
+                                const data = await fetch(path, {
+                                  headers: {
+                                    authorization: `Bearer ${token}`,
+                                  },
+                                });
+                                const blob = await data.blob();
+                                const href = window.URL.createObjectURL(blob);
+                                const a: any = linkRef.current;
+                                a.download = note.attachment.split(
+                                  './uploads/',
+                                )[1];
+                                a.href = href;
+                                a.click();
+                                a.href = '';
+                              } catch (error) {
+                                return;
+                              }
+
+                              // href={`/download?path=${attachment}`}
+                            }}
+                          >
+                            <i className="far fa-file-alt" />
+                          </a>
+                          <h4 className="alert-heading">Warning!</h4>
+                          <p className="mb-0">
+                            There is attachment for this note already. If you
+                            upload new file you will lose existing attachment.
+                          </p>
+                        </div>
+                      </React.Fragment>
+                    ) : null}
+
                     <div className="form-group">
                       <label>File (optional)</label>
                       <input
