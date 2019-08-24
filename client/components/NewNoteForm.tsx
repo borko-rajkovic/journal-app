@@ -5,8 +5,8 @@ import { Mutation, withApollo } from 'react-apollo';
 import redirect from '../lib/redirect';
 
 const CREATE_NOTE = gql`
-  mutation addNote($title: String!, $body: String!) {
-    addNote(newNoteData: { title: $title, body: $body }) {
+  mutation addNote($title: String!, $body: String!, $file: Upload) {
+    addNote(newNoteData: { title: $title, body: $body, file: $file }) {
       id
       userId
       title
@@ -18,6 +18,7 @@ const CREATE_NOTE = gql`
 const NewNoteForm = () => {
   let title: any;
   let body: any;
+  let file: any;
 
   return (
     <Mutation
@@ -41,12 +42,21 @@ const NewNoteForm = () => {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    create({
-                      variables: {
-                        title: title.value,
-                        body: body.value,
-                      },
-                    });
+                    const variables: any = {
+                      title: title.value,
+                      body: body.value,
+                    };
+
+                    if (file.files[0]) {
+                      variables.file = file.files[0];
+                    }
+
+                    return (
+                      file.validity.valid &&
+                      create({
+                        variables,
+                      })
+                    );
                   }}
                 >
                   <fieldset>
@@ -86,6 +96,23 @@ const NewNoteForm = () => {
                       <div className="invalid-feedback">
                         Body should be at least 10 characters long
                       </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label>File (optional)</label>
+                      <input
+                        type="file"
+                        className="form-control-file"
+                        aria-describedby="fileHelp"
+                        ref={node => {
+                          file = node;
+                        }}
+                      />
+                      <small id="fileHelp" className="form-text text-muted">
+                        Provide file attachment to your note. This is optional
+                        and later on you can add file if you want by editing
+                        this note.
+                      </small>
                     </div>
                     <button className="btn btn-primary">Submit</button>
                   </fieldset>

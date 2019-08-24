@@ -5,8 +5,15 @@ import { Mutation, withApollo } from 'react-apollo';
 import redirect from '../lib/redirect';
 
 const EDIT_NOTE = gql`
-  mutation editNote($title: String, $body: String, $id: String!) {
-    editNote(updatedNoteData: { id: $id, title: $title, body: $body }) {
+  mutation editNote(
+    $title: String
+    $body: String
+    $id: String!
+    $file: Upload
+  ) {
+    editNote(
+      updatedNoteData: { id: $id, title: $title, body: $body, file: $file }
+    ) {
       id
       userId
       title
@@ -24,6 +31,7 @@ const EditNoteForm = (props: any) => {
   const [title, setTitle] = useState(note.title);
   const [body, setBody] = useState(note.body);
 
+  let file: any;
   return (
     <Mutation
       mutation={EDIT_NOTE}
@@ -48,12 +56,18 @@ const EditNoteForm = (props: any) => {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    edit({
-                      variables: {
+                    const variables: any = {
                         id,
                         title,
                         body,
-                      },
+                    };
+
+                    if (file.files[0]) {
+                      variables.file = file.files[0];
+                    }
+
+                    edit({
+                      variables,
                     });
                   }}
                 >
@@ -93,6 +107,22 @@ const EditNoteForm = (props: any) => {
                         Body should be at least 10 characters long
                       </div>
                     </div>
+                    <div className="form-group">
+                      <label>File (optional)</label>
+                      <input
+                        type="file"
+                        className="form-control-file"
+                        aria-describedby="fileHelp"
+                        ref={node => {
+                          file = node;
+                        }}
+                      />
+                      <small id="fileHelp" className="form-text text-muted">
+                        Provide file attachment to your note. Take note that if
+                        there was an existing file it will be overriden.
+                      </small>
+                    </div>
+
                     <button className="btn btn-primary">Submit</button>
                   </fieldset>
                 </form>

@@ -1,6 +1,8 @@
-import { ApolloClient, InMemoryCache } from 'apollo-boost';
-import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
+import { createUploadLink } from 'apollo-upload-client';
 import fetch from 'isomorphic-unfetch';
 
 let apolloClient: any = null;
@@ -13,14 +15,14 @@ if (typeof window === 'undefined') {
 const port = process.env.PORT || 3000;
 
 function create(initialState: any, { getToken, fetchOptions }: any) {
-  const httpLink = createHttpLink({
-    uri:
-      process.env.NODE_ENV === 'production'
-        ? 'https://journal-mern.herokuapp.com/graphql'
-        : `http://localhost:${port}/graphql`,
-    credentials: 'same-origin',
-    fetchOptions,
-  });
+  // const httpLink = createHttpLink({
+  //   uri:
+  //     process.env.NODE_ENV === 'production'
+  //       ? 'https://journal-mern.herokuapp.com/graphql'
+  //       : `http://localhost:${port}/graphql`,
+  //   credentials: 'same-origin',
+  //   fetchOptions,
+  // });
 
   const authLink = setContext((_, { headers }) => {
     const token = getToken();
@@ -34,11 +36,28 @@ function create(initialState: any, { getToken, fetchOptions }: any) {
 
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   const isBrowser = typeof window !== 'undefined';
+  // return new ApolloClient({
+  //   connectToDevTools: isBrowser,
+  //   ssrMode: !isBrowser, // Disables forceFetch on the server (so queries are only run once)
+  //   link: authLink.concat(httpLink),
+  //   cache: new InMemoryCache().restore(initialState || {}),
+  // });
+
   return new ApolloClient({
-    connectToDevTools: isBrowser,
-    ssrMode: !isBrowser, // Disables forceFetch on the server (so queries are only run once)
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache().restore(initialState || {}),
+    ssrMode: !isBrowser,
+    link: ApolloLink.from([
+      authLink,
+      createUploadLink({
+        uri:
+          process.env.NODE_ENV === 'production'
+            ? 'https://journal-mern.herokuapp.com/graphql'
+            : `http://localhost:${port}/graphql`,
+        credentials: 'same-origin',
+        fetchOptions,
+      }),
+    ]),
+
+    cache: new InMemoryCache().restore(initialState),
   });
 }
 
