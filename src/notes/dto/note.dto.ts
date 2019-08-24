@@ -15,6 +15,9 @@ export class NoteType {
   body: string;
 
   @Field()
+  attachment: string;
+
+  @Field()
   createdDate: Date;
 
   @Field()

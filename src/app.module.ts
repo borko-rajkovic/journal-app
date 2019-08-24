@@ -16,6 +16,7 @@ import { UsersModule } from './users/users.module';
       autoSchemaFile: 'schema.gql',
       context: ({ req }) => ({ req }),
       playground: true,
+      uploads: { maxFileSize: 10000000, maxFiles: 1 },
     }),
     NotesModule,
     AuthModule,

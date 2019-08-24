@@ -1,4 +1,7 @@
+import * as fs from 'fs';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import * as mkdirp from 'mkdirp';
+import * as shortid from 'shortid';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -7,13 +10,51 @@ import { NewNoteInput } from './dto/new-note.input';
 import { NotesCountArgs } from './dto/notes-count.args';
 import { NotesArgs } from './dto/notes.args';
 import { Note } from './schema/note.interface';
+import { ReadStream } from 'fs';
+
+const UPLOAD_DIR = './uploads';
 
 @Injectable()
 export class NotesService {
   constructor(@InjectModel('Note') private readonly noteModel: Model<Note>) {}
 
+  storeFS({
+    stream,
+    filename,
+  }: {
+    stream: ReadStream;
+    filename: string;
+  }): Promise<{ id: string; path: string }> {
+    const id = shortid.generate();
+    const path = `${UPLOAD_DIR}/${id}-${filename}`;
+    return new Promise((resolve, reject) =>
+      stream
+        .on('error', error => {
+          if ((stream as any).truncated) {
+            // Delete the truncated file.
+            fs.unlinkSync(path);
+          }
+          reject(error);
+        })
+        .pipe(fs.createWriteStream(path))
+        .on('error', error => reject(error))
+        .on('finish', () => resolve({ id, path })),
+    );
+  }
+
   async create(data: NewNoteInput, user: any): Promise<Note> {
+    let attachment = '';
+    if (data.file) {
+      mkdirp.sync(UPLOAD_DIR);
+
+      const result = await data.file;
+      const { filename, createReadStream } = result;
+      const stream = createReadStream();
+      const { path } = await this.storeFS({ stream, filename });
+      attachment = path;
+    }
     const createdNote = new this.noteModel(data);
+    createdNote.attachment = attachment;
     createdNote.userId = user.id;
     const newNote = await createdNote.save();
     return newNote;
@@ -33,6 +74,16 @@ export class NotesService {
 
     if (data.title) {
       note.title = data.title;
+    }
+
+    if (data.file) {
+      mkdirp.sync(UPLOAD_DIR);
+
+      const result = await data.file;
+      const { filename, createReadStream } = result;
+      const stream = createReadStream();
+      const { path } = await this.storeFS({ stream, filename });
+      note.attachment = path;
     }
 
     note.updatedDate = new Date();
