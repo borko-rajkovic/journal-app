@@ -310,7 +310,7 @@ const NotesLoaded = ({
             )
           ) : (
             <tr>
-              <td colSpan={5}>There are no data</td>
+              <td colSpan={6}>There are no data</td>
             </tr>
           )}
         </tbody>
@@ -361,7 +361,9 @@ const NotesLoaded = ({
             ))}
             <li
               className={
-                page === numberOfPages ? 'page-item disabled' : 'page-item'
+                page === numberOfPages || numberOfPages === 0
+                  ? 'page-item disabled'
+                  : 'page-item'
               }
             >
               <a
