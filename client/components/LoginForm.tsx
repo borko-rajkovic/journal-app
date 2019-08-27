@@ -29,9 +29,9 @@ const LoginForm = ({ client }: any) => {
           redirect({}, '/');
         });
       }}
-      // onError={(error: any) => {
-      //   // If you want to send error to external service?
-      // }}
+      onError={() => {
+         // If you want to send error to external service?
+      }}
     >
       {(signinUser: any, { error }: any) => (
         <React.Fragment>
