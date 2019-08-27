@@ -24,7 +24,7 @@ const NewNoteForm = () => {
     <Mutation
       mutation={CREATE_NOTE}
       onCompleted={() => redirect({}, '/')}
-      // onError={(error: ApolloError) => {}}
+      onError={() => {}}
     >
       {(create: any, { error, loading }: any) =>
         loading ? (
